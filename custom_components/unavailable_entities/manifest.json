@@ -1,12 +1,11 @@
 {
   "domain": "unavailable_entities",
   "name": "Unavailable Entities",
-  "documentation": "https://github.com/joshuaspence/unavailable_entities",
-  "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/joshuaspence/unavailable_entities/issues",
   "version": "0.0.0",
-  "config_flow": false,
+  "documentation": "https://github.com/joshuaspence/unavailable_entities",
+  "issue_tracker": "https://github.com/joshuaspence/unavailable_entities/issues",
   "codeowners": [
     "@joshuaspence"
-  ]
+  ],
+  "iot_class": "calculated"
 }
