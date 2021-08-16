@@ -1,0 +1,24 @@
+---
+name: 'Test'
+on:
+  pull_request: {}
+  push:
+    branches:
+      - 'master'
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  pytest:
+    runs-on: 'ubuntu-latest'
+    strategy:
+      matrix:
+        python-version:
+          - '3.8'
+          - '3.9'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'actions/setup-python@v2'
+        with:
+          python-version: '${{ matrix.python-version }}'
+      - run: 'pip install --requirement requirements_test.txt'
+      - run: 'pytest'

@@ -1,0 +1,30 @@
+---
+name: 'Lint'
+on:
+  pull_request: {}
+  push:
+    branches:
+      - 'master'
+  schedule:
+    - cron: '0 0 * * *'
+jobs:
+  python:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'ricardochaves/python-lint@v1.4.0'
+        with:
+          python-root-list: >-
+            custom_components/integration_blueprint
+            tests
+
+          # TODO: Enable these linters.
+          use-pylint: false
+          use-pycodestyle: false
+          use-mypy: false
+          use-isort: false
+  yamllint:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'ibiqlik/action-yamllint@v3'
