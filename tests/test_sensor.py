@@ -1,5 +1,6 @@
-from custom_components.unavailable_entities import sensor
 from homeassistant.setup import async_setup_component
+
+from custom_components.unavailable_entities import sensor
 
 
 async def test_entity(hass):

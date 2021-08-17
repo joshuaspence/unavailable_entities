@@ -1,18 +1,13 @@
 from datetime import timedelta
 import logging
 from typing import List, Optional
-import voluptuous as vol
 
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import CONF_EXCLUDE, CONF_FRIENDLY_NAME, CONF_UNIQUE_ID
 from homeassistant.core import HomeAssistant
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.helpers.entity import Entity
-
-from homeassistant.const import (
-    CONF_EXCLUDE,
-    CONF_FRIENDLY_NAME,
-    CONF_UNIQUE_ID,
-)
+import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 

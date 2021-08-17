@@ -22,7 +22,6 @@ jobs:
           use-pylint: false
           use-pycodestyle: false
           use-mypy: false
-          use-isort: false
   yamllint:
     runs-on: 'ubuntu-latest'
     steps:
