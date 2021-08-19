@@ -1,6 +1,5 @@
 {
   "name": "Unavailable Entities",
-  "domains": [
-    "sensor"
-  ]
+  "render_readme": true,
+  "domains": ["sensor"]
 }
