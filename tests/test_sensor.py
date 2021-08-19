@@ -7,7 +7,11 @@ async def test_entity(hass):
     assert await async_setup_component(
         hass,
         "sensor",
-        {"sensor": {"platform": sensor.PLATFORM_NAME}},
+        {
+            "sensor": {
+                "platform": "unavailable_entities",
+            },
+        },
     )
 
     await hass.async_block_till_done()

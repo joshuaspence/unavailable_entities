@@ -1,0 +1,1 @@
+DOMAIN = "unavailable_entities"
