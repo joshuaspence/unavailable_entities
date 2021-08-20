@@ -24,9 +24,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 )
 
 
-def setup_platform(
-    hass: HomeAssistant, config, add_entities, discovery_info=None
-):
+def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=None):
     unique_id = config.get(CONF_UNIQUE_ID)
     name = config.get(CONF_NAME)
     exclude = config.get(CONF_EXCLUDE)
@@ -39,7 +37,8 @@ def setup_platform(
                 exclude,
             )
         ],
-        True)
+        True,
+    )
 
     return True
 
@@ -94,12 +93,3 @@ class UnavailableEntitiesSensor(Entity):
 
     def update(self):
         self._state = 0
-
-
-    #@property
-    #def icon(self):
-    #    return "mdi:check-circle"
-
-    #@property
-    #def device_state_attributes(self):
-    #    return None
