@@ -1,5 +1,6 @@
 from homeassistant.components.sensor import DOMAIN
 from homeassistant.const import ATTR_ICON, ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
 
 from custom_components.unavailable_entities.sensor import (
@@ -8,7 +9,7 @@ from custom_components.unavailable_entities.sensor import (
 )
 
 
-async def test_sensor(hass):
+async def test_sensor(hass: HomeAssistant) -> None:
     sensor = UnavailableEntitiesSensor(hass)
 
     await hass.async_block_till_done()
@@ -38,7 +39,7 @@ async def test_sensor(hass):
     assert sensor.state == len(sensors)
 
 
-async def test_sensor_defaults(hass):
+async def test_sensor_defaults(hass: HomeAssistant) -> None:
     assert await async_setup_component(
         hass,
         DOMAIN,
@@ -60,7 +61,7 @@ async def test_sensor_defaults(hass):
     assert state.attributes.get(ATTR_UNIT_OF_MEASUREMENT) is None
 
 
-async def test_sensor_customizations(hass):
+async def test_sensor_customizations(hass: HomeAssistant) -> None:
     sensor_name = "Test Sensor"
 
     assert await async_setup_component(
