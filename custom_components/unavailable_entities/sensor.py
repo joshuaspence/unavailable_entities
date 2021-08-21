@@ -1,74 +1,40 @@
-from datetime import timedelta
-import logging
-from typing import List, Optional
+from typing import Optional
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_EXCLUDE, CONF_NAME, CONF_UNIQUE_ID
 from homeassistant.core import HomeAssistant
-import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import Entity
-import voluptuous as vol
-
-_LOGGER = logging.getLogger(__name__)
-
-SCAN_INTERVAL = timedelta(minutes=1)
-
-PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
-    {
-        vol.Optional(CONF_UNIQUE_ID): cv.string,
-        vol.Optional(CONF_NAME): cv.string,
-        vol.Optional(CONF_EXCLUDE, default=[]): vol.All(
-            cv.ensure_list, [cv.entity_ids]
-        ),
-    }
-)
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 
 
-def setup_platform(hass: HomeAssistant, config, add_entities, discovery_info=None):
-    unique_id = config.get(CONF_UNIQUE_ID)
-    name = config.get(CONF_NAME)
-    exclude = config.get(CONF_EXCLUDE)
-
+def setup_platform(
+    hass: HomeAssistant,
+    config: ConfigType,
+    add_entities: AddEntitiesCallback,
+    discovery_info: Optional[DiscoveryInfoType] = None,
+) -> bool:
     add_entities(
-        [
-            UnavailableEntitiesSensor(
-                unique_id,
-                name,
-                exclude,
-            )
-        ],
-        True,
+        [UnavailableEntitiesSensor(hass)],
+        update_before_add=True,
     )
 
     return True
 
 
 class UnavailableEntitiesSensor(Entity):
-    def __init__(
-        self,
-        unique_id: Optional[str],
-        name: Optional[str],
-        exclude: List[str] = [],
-    ) -> None:
-        self._unique_id = unique_id
-        self._name = name
-        self._exclude = exclude
+    def __init__(self, hass: HomeAssistant) -> None:
+        self.hass = hass
+        self._state = None
 
     @property
-    def device_class(self) -> Optional[str]:
-        return super().device_class
-
-    @property
-    def entity_id(self) -> Optional[str]:
+    def entity_id(self) -> str:
         return "sensor.unavailable_entities"
 
     @property
-    def extra_state_attributes(self):
-        return {}
-
-    @property
-    def name(self) -> str:
-        return self._name
+    def icon(self) -> str:
+        if self.state == 0:
+            return "mdi:check-circle"
+        else:
+            return "mdi:alert-circle"
 
     @property
     def should_poll(self) -> bool:
@@ -76,20 +42,17 @@ class UnavailableEntitiesSensor(Entity):
         return True
 
     @property
-    def state(self):
+    def state(self) -> Optional[int]:
         return self._state
 
-    @property
-    def state_class(self) -> Optional[str]:
-        return super().state_class
+    def update(self) -> None:
+        count = 0
 
-    @property
-    def unique_id(self) -> Optional[str]:
-        return self._unique_id
+        for state in self.hass.states.all():
+            if state.entity_id == self.entity_id:
+                continue
 
-    @property
-    def unit_of_measurement(self) -> Optional[str]:
-        return None
+            if state.state in ["unavailable", "unknown"]:
+                count += 1
 
-    def update(self):
-        self._state = 0
+        self._state = count
