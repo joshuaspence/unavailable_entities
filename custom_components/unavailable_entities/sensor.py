@@ -6,7 +6,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType, StateType
 import voluptuous as vol
 
 ATTR_ENTITIES = "entities"
@@ -67,7 +67,7 @@ class UnavailableEntitiesSensor(Entity):
         return True
 
     @property
-    def state(self) -> int:
+    def state(self) -> StateType:
         return len(self._state)
 
     def update(self) -> None:
