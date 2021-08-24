@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from homeassistant.components.sensor import DOMAIN
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_ICON, ATTR_UNIT_OF_MEASUREMENT
 from homeassistant.core import HomeAssistant
@@ -6,14 +8,14 @@ from homeassistant.setup import async_setup_component
 from custom_components.unavailable_entities.sensor import ATTR_ENTITIES, DEFAULT_NAME
 
 
-async def test_sensor_manual_update(hass: HomeAssistant) -> None:
-    await async_setup_component(hass, "homeassistant", {})
+async def setup_test_entities(hass: HomeAssistant, config: Dict[str, Any] = {}) -> None:
     assert await async_setup_component(
         hass,
         DOMAIN,
         {
             "sensor": {
                 "platform": "unavailable_entities",
+                **config,
             },
         },
     )
@@ -21,6 +23,11 @@ async def test_sensor_manual_update(hass: HomeAssistant) -> None:
     await hass.async_block_till_done()
     await hass.async_start()
     await hass.async_block_till_done()
+
+
+async def test_sensor_manual_update(hass: HomeAssistant) -> None:
+    await async_setup_component(hass, "homeassistant", {})
+    await setup_test_entities(hass)
 
     await hass.services.async_call(
         "homeassistant",
@@ -68,19 +75,7 @@ async def test_sensor_manual_update(hass: HomeAssistant) -> None:
 
 
 async def test_sensor_defaults(hass: HomeAssistant) -> None:
-    assert await async_setup_component(
-        hass,
-        DOMAIN,
-        {
-            "sensor": {
-                "platform": "unavailable_entities",
-            },
-        },
-    )
-
-    await hass.async_block_till_done()
-    await hass.async_start()
-    await hass.async_block_till_done()
+    await setup_test_entities(hass)
 
     state = hass.states.get("sensor.unavailable_entities")
     assert state.entity_id == "sensor.unavailable_entities"
@@ -92,20 +87,7 @@ async def test_sensor_defaults(hass: HomeAssistant) -> None:
 async def test_sensor_customizations(hass: HomeAssistant) -> None:
     sensor_name = "Test Sensor"
 
-    assert await async_setup_component(
-        hass,
-        DOMAIN,
-        {
-            "sensor": {
-                "platform": "unavailable_entities",
-                "name": sensor_name,
-            },
-        },
-    )
-
-    await hass.async_block_till_done()
-    await hass.async_start()
-    await hass.async_block_till_done()
+    await setup_test_entities(hass, {"name": sensor_name})
 
     state = hass.states.get("sensor.unavailable_entities")
     assert state.entity_id == "sensor.unavailable_entities"
