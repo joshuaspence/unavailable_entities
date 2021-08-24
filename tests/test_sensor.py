@@ -1,8 +1,15 @@
 from typing import Any, Dict
 
 from homeassistant.components.sensor import DOMAIN
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_ICON, ATTR_UNIT_OF_MEASUREMENT
+from homeassistant.const import (
+    ATTR_ENTITY_ID,
+    ATTR_ICON,
+    ATTR_UNIT_OF_MEASUREMENT,
+    CONF_NAME,
+    CONF_UNIQUE_ID,
+)
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry
 from homeassistant.setup import async_setup_component
 
 from custom_components.unavailable_entities.sensor import ATTR_ENTITIES, DEFAULT_NAME
@@ -78,6 +85,7 @@ async def test_sensor_defaults(hass: HomeAssistant) -> None:
     await setup_test_entities(hass)
 
     state = hass.states.get("sensor.unavailable_entities")
+    assert state
     assert state.entity_id == "sensor.unavailable_entities"
     assert state.name == DEFAULT_NAME
     assert state.attributes.get(ATTR_ICON) == "mdi:check-circle"
@@ -87,8 +95,18 @@ async def test_sensor_defaults(hass: HomeAssistant) -> None:
 async def test_sensor_customizations(hass: HomeAssistant) -> None:
     sensor_name = "Test Sensor"
 
-    await setup_test_entities(hass, {"name": sensor_name})
+    await setup_test_entities(hass, {CONF_NAME: sensor_name})
 
     state = hass.states.get("sensor.unavailable_entities")
+    assert state
     assert state.entity_id == "sensor.unavailable_entities"
     assert state.name == sensor_name
+
+
+async def test_sensor_unique_id(hass: HomeAssistant) -> None:
+    unique_id = "abc123"
+
+    await setup_test_entities(hass, {CONF_UNIQUE_ID: unique_id})
+
+    registry = entity_registry.async_get(hass)
+    assert registry.async_get_entity_id("sensor", "unavailable_entities", unique_id)

@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
-from homeassistant.const import CONF_NAME
+from homeassistant.const import CONF_NAME, CONF_UNIQUE_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.entity import Entity
@@ -16,6 +16,7 @@ DEFAULT_NAME = "Unavailable Entities"
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        vol.Optional(CONF_UNIQUE_ID): cv.string,
     }
 )
 
@@ -27,9 +28,10 @@ def setup_platform(
     discovery_info: Optional[DiscoveryInfoType] = None,
 ) -> bool:
     name = config.get(CONF_NAME)
+    unique_id = config.get(CONF_UNIQUE_ID)
 
     add_entities(
-        [UnavailableEntitiesSensor(hass, name)],
+        [UnavailableEntitiesSensor(hass, name, unique_id)],
         update_before_add=True,
     )
 
@@ -37,9 +39,15 @@ def setup_platform(
 
 
 class UnavailableEntitiesSensor(Entity):
-    def __init__(self, hass: HomeAssistant, name: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        name: Optional[str] = None,
+        unique_id: Optional[str] = None,
+    ) -> None:
         self.hass = hass
         self._name = name
+        self._unique_id = unique_id
         self._state = set()
 
     @property
@@ -69,6 +77,10 @@ class UnavailableEntitiesSensor(Entity):
     @property
     def state(self) -> StateType:
         return len(self._state)
+
+    @property
+    def unique_id(self) -> Optional[str]:
+        return self._unique_id
 
     def update(self) -> None:
         entities = set()
