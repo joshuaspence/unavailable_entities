@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Any, Dict, Optional
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME
@@ -8,6 +8,8 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 import voluptuous as vol
+
+ATTR_ENTITIES = "entities"
 
 DEFAULT_NAME = "Unavailable Entities"
 
@@ -38,11 +40,15 @@ class UnavailableEntitiesSensor(Entity):
     def __init__(self, hass: HomeAssistant, name: Optional[str] = None) -> None:
         self.hass = hass
         self._name = name
-        self._state = None
+        self._state = set()
 
     @property
     def entity_id(self) -> str:
         return "sensor.unavailable_entities"
+
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
+        return {ATTR_ENTITIES: self._state}
 
     @property
     def icon(self) -> str:
@@ -61,17 +67,17 @@ class UnavailableEntitiesSensor(Entity):
         return True
 
     @property
-    def state(self) -> Optional[int]:
-        return self._state
+    def state(self) -> int:
+        return len(self._state)
 
     def update(self) -> None:
-        count = 0
+        entities = set()
 
         for state in self.hass.states.all():
             if state.entity_id == self.entity_id:
                 continue
 
             if state.state in ["unavailable", "unknown"]:
-                count += 1
+                entities.add(state.entity_id)
 
-        self._state = count
+        self._state = entities
