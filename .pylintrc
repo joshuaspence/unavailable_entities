@@ -1,0 +1,7 @@
+[MESSAGES CONTROL]
+disable=
+  fixme,
+  import-error,
+  missing-class-docstring,
+  missing-function-docstring,
+  missing-module-docstring

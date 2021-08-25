@@ -15,14 +15,16 @@ from homeassistant.setup import async_setup_component
 from custom_components.unavailable_entities.sensor import ATTR_ENTITIES, DEFAULT_NAME
 
 
-async def setup_test_entities(hass: HomeAssistant, config: Dict[str, Any] = {}) -> None:
+async def setup_test_entities(
+    hass: HomeAssistant, config: Dict[str, Any] = None
+) -> None:
     assert await async_setup_component(
         hass,
         DOMAIN,
         {
             "sensor": {
                 "platform": "unavailable_entities",
-                **config,
+                **(config or {}),
             },
         },
     )

@@ -25,6 +25,7 @@ def setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
     add_entities: AddEntitiesCallback,
+    # pylint: disable=unused-argument
     discovery_info: Optional[DiscoveryInfoType] = None,
 ) -> bool:
     name = config.get(CONF_NAME)
@@ -60,10 +61,10 @@ class UnavailableEntitiesSensor(Entity):
 
     @property
     def icon(self) -> str:
-        if self.state == 0:
-            return "mdi:check-circle"
-        else:
+        if self.state > 0:
             return "mdi:alert-circle"
+
+        return "mdi:check-circle"
 
     @property
     def name(self) -> Optional[str]:

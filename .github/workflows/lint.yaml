@@ -16,11 +16,13 @@ jobs:
         with:
           category: 'integration'
           ignore: 'brands'
+
   hassfest:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'home-assistant/actions/hassfest@master'
+  
   python-lint:
     runs-on: 'ubuntu-latest'
     steps:
@@ -32,9 +34,9 @@ jobs:
             tests
 
           # TODO: Enable these linters.
-          use-pylint: false
           use-pycodestyle: false
           use-mypy: false
+  
   yamllint:
     runs-on: 'ubuntu-latest'
     steps:
