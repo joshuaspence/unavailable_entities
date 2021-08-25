@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Set
 
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME, CONF_UNIQUE_ID
@@ -49,7 +49,7 @@ class UnavailableEntitiesSensor(Entity):
         self.hass = hass
         self._name = name
         self._unique_id = unique_id
-        self._state = set()
+        self._state: Set[str] = set()
 
     @property
     def entity_id(self) -> str:
