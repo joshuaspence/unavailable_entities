@@ -8,6 +8,19 @@ on:
   schedule:
     - cron: '0 0 * * *'
 jobs:
+  hacs:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'hacs/action@main'
+        with:
+          category: 'integration'
+          ignore: 'brands'
+  hassfest:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'home-assistant/actions/hassfest@master'
   python-lint:
     runs-on: 'ubuntu-latest'
     steps:
